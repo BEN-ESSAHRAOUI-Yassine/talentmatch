@@ -99,6 +99,7 @@ Format: `featureAI/{kebab-case-title}`
    - Clear title matching the feature
    - Description with context/goals
    - Subtasks representing individual implementation steps
+5. **Subtasks from spec are MANDATORY**: When a spec is generated via `openspec-propose`, the agent MUST create one Jira Subtask (type `Sous-tâche`) for EVERY task listed in the spec. Subtask titles must match the spec task titles exactly. This ensures Jira reflects 100% of the work scope.
 
 ---
 
@@ -123,6 +124,9 @@ All major feature tickets are created upfront in Jira (TA project, type Tâche, 
 │ 3. AI agent updates Jira ticket TA-X:               │
 │    • Adds/updates description from spec              │
 │    • Creates subtasks from spec tasks                │
+│      ⚠️ EVERY task in the spec MUST become a         │
+│         Jira Subtask (type: Sous-tâche)               │
+│      ⚠️ Subtask titles = spec task titles             │
 │    • Transitions TA-X to status "En cours" (id: 21)  │
 ├─────────────────────────────────────────────────────┤
 │ 4. AI agent creates GitHub branch:                  │

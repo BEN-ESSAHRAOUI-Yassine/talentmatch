@@ -156,7 +156,7 @@ This project uses a strict MCP-driven workflow defined in `ruleset.md`.
 Key rules from `ruleset.md`:
 - Git: NEVER push to main. ALWAYS use `featureAI/{kebab-case-title}` branches. User manages main.
 - Jira: Project TA. Pre-created Tâche tickets. Status cycle: À faire → En cours (21) → TERMINE (41).
-- Workflow: openspec-propose → update Jira (subtasks + En cours) → create branch → implement → openspec-archive → transition TERMINE → commit/push → PR
+- Workflow: openspec-propose → update Jira (every spec task → Jira Subtask + En cours) → create branch → implement → openspec-archive → transition TERMINE → commit/push → PR
 - AI agent NEVER merges to main, NEVER creates top-level Jira tickets without approval.
 
 </laravel-boost-guidelines>
