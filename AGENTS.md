@@ -145,4 +145,18 @@ This project has additional rules defined in `openspec/config.yaml`.
 - Read `openspec/config.yaml` for: naming, routing, permissions, tenant scoping, testing, DSSMS, DOD, git workflow
 - Always follow config.yaml rules alongside these Boost guidelines
 
+=== mcp workflow rules ===
+
+# MCP Workflow Rules
+
+This project uses a strict MCP-driven workflow defined in `ruleset.md`.
+
+**YOU MUST READ `ruleset.md` BEFORE ANY OPERATION.**
+
+Key rules from `ruleset.md`:
+- Git: NEVER push to main. ALWAYS use `featureAI/{kebab-case-title}` branches. User manages main.
+- Jira: Project TA. Pre-created Tâche tickets. Status cycle: À faire → En cours (21) → TERMINE (41).
+- Workflow: openspec-propose → update Jira (subtasks + En cours) → create branch → implement → openspec-archive → transition TERMINE → commit/push → PR
+- AI agent NEVER merges to main, NEVER creates top-level Jira tickets without approval.
+
 </laravel-boost-guidelines>
