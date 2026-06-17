@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function offres(): HasMany
+    {
+        return $this->hasMany(Offre::class);
+    }
 }
