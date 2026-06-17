@@ -1,20 +1,362 @@
-schema: spec-driven
+# ============================================================
+# TalentMatch — OpenSpec Configuration
+# ============================================================
+# Read this file before proposing or archiving any spec.
+# All conventions here override generic defaults.
+# ============================================================
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+project:
+  name: TalentMatch
+  key: TA
+  description: >
+    Laravel 11 HR candidate pre-screening platform. HR agents create job offers,
+    submit CVs as plain text, and an AI agent analyzes each CV against the offer —
+    extracting candidate info, generating a justified matching score, and producing
+    a structured recommendation. A conversational assistant with persistent memory
+    lets the HR agent ask follow-up questions without losing context.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+# ============================================================
+# STACK
+# ============================================================
+stack:
+  php: "8.3"
+  framework: "laravel/framework v13"
+  auth: "laravel/breeze v2"
+  ai: "laravel/ai v0"
+  mcp: "laravel/mcp v0"
+  boost: "laravel/boost v2"
+  testing: "pestphp/pest v4"
+  formatter: "laravel/pint v1"
+  frontend:
+    css: "tailwindcss v3"
+    js: "alpinejs v3"
+  database: "mysql"
+  queue: "database"
+
+# ============================================================
+# NAMING CONVENTIONS
+# ============================================================
+naming:
+  models:
+    - Offre           # not JobOffer, not Job
+    - Candidat        # not Candidate
+    - Analyse         # not Analysis
+    - AgentConversation
+    - AgentConversationMessage
+  tables:
+    - users
+    - offres
+    - candidats
+    - analyses
+    - agent_conversations
+    - agent_conversation_messages
+  branches: "featureAI/{kebab-case-title}"
+  commits: "type(scope): description [AI-assisted]"
+  form_requests:
+    - StoreOffreRequest
+    - UpdateOffreRequest
+    - StoreCandidatRequest
+  enums:
+    recommandation: "App\\Enums\\RecommandationEnum"   # convoquer | attente | rejeter
+    status: "App\\Enums\\AnalyseStatusEnum"            # pending | completed | failed
+    role: "App\\Enums\\MessageRoleEnum"                # user | assistant
+  jobs:
+    - AnalyseCvJob    # dispatched after CV submission, runs AI structured output
+  tools:
+    - GetCandidateAnalysisTool
+    - GetJobRequirementsTool
+    - CompareCandidatesTool
+
+# ============================================================
+# ROUTING
+# ============================================================
+routing:
+  prefix: null          # no API prefix — standard web routes
+  middleware: [web, auth]
+  named_routes: true    # always use route() helper, never hardcoded URLs
+  resources:
+    offres:
+      - "GET    /offres                              offres.index"
+      - "GET    /offres/create                       offres.create"
+      - "POST   /offres                              offres.store"
+      - "GET    /offres/{offre}                      offres.show"
+      - "GET    /offres/{offre}/edit                 offres.edit"
+      - "PUT    /offres/{offre}                      offres.update"
+      - "DELETE /offres/{offre}                      offres.destroy"
+    candidats:
+      - "POST   /offres/{offre}/candidats            candidats.store"
+      - "GET    /offres/{offre}/candidats/{candidat} candidats.show"
+    conversations:
+      - "POST   /analyses/{analyse}/conversations                         conversations.store"
+      - "GET    /analyses/{analyse}/conversations/{conversation}          conversations.show"
+      - "POST   /analyses/{analyse}/conversations/{conversation}/messages messages.store"
+
+# ============================================================
+# DATABASE & ELOQUENT
+# ============================================================
+database:
+  casts:
+    Offre:
+      required_skills: array
+    Candidat: {}  # no user_id — ownership resolved via analyse → offre → user
+    Analyse:
+      competences_extraites: array
+      langues: array
+      points_forts: array
+      lacunes: array
+      competences_manquantes: array
+      recommandation: "RecommandationEnum"
+      status: "AnalyseStatusEnum"
+    AgentConversationMessage:
+      role: "MessageRoleEnum"
+
+  eager_loading:
+    - "Offre → candidats (via analyses)"
+    - "Analyse → offre, candidat"
+    - "AgentConversation → messages"
+    - "No N+1 — verify with Debugbar on every controller method"
+
+  scoping:
+    - "All offres queries must be scoped to auth()->id()"
+    - "Candidats are accessible only through an analyse whose offre belongs to auth()->id()"
+    - "Analyses are accessible only if the related offre belongs to auth()->id()"
+    - "Conversations are accessible only if the related analyse is scoped to auth()->id()"
+
+# ============================================================
+# AI — TWO LAYERS
+# ============================================================
+ai:
+  layer_1_structured_output:
+    trigger: "CV submitted via StoreCandidatRequest"
+    job: AnalyseCvJob
+    async: true   # always queued — HTTP response must be immediate
+    contract:
+      competences_extraites: "array<string>"
+      annees_experience: integer
+      niveau_etudes: string
+      langues: "array<string>"
+      matching_score: "integer 0-100"
+      points_forts: "array<string>"
+      lacunes: "array<string>"
+      competences_manquantes: "array<string>"
+      recommandation: "convoquer | attente | rejeter"
+      justification: string
+    error_handling:
+      - "Set status=failed if AI returns malformed JSON"
+      - "Surface error message to UI — never swallow silently"
+      - "status=pending on dispatch, status=completed on success"
+
+  layer_2_agent:
+    trigger: "HR agent sends a message in a conversation"
+    memory: "Replay full agent_conversation_messages history on each turn"
+    tools:
+      GetCandidateAnalysisTool:
+        signature: "handle(int $candidatId): Analyse"
+        description: "Fetch the full analysis record from DB for a given candidate"
+      GetJobRequirementsTool:
+        signature: "handle(int $offreId): Offre"
+        description: "Fetch the job offer criteria — required skills, experience, description"
+      CompareCandidatesTool:
+        signature: "handle(int $id1, int $id2): array"
+        description: >
+          Compare two analysis records on the same offer.
+          Returns structured diff: scores, strengths, gaps, recommendation.
+          Returns 422 if the two candidates belong to different offers.
+    forbidden:
+      - "NEVER fabricate scores, skills, or candidate data"
+      - "ALWAYS call a tool to retrieve real data before answering"
+      - "NEVER answer questions about candidates from other users' offers"
+
+# ============================================================
+# PERMISSIONS
+# ============================================================
+permissions:
+  - "Users can only see and manage their own offres"
+  - "Users can only see and manage their own candidats"
+  - "Analyses, conversations, and messages inherit scoping from their parent offre"
+  - "Return 403 for unauthorized access — never expose other users' data"
+  - "Use policy classes — do not inline auth checks in controllers"
+
+# ============================================================
+# FORM REQUESTS & VALIDATION
+# ============================================================
+validation:
+  StoreOffreRequest:
+    title: "required|string|max:255"
+    description: "required|string"
+    required_skills: "required|array|min:1"
+    required_skills.*: "string"
+    minimum_experience: "required|integer|min:0"
+  UpdateOffreRequest: "same rules as StoreOffreRequest"
+  StoreCandidatRequest:
+    name: "required|string|max:255"
+    cv_text: "required|string|min:50"
+    # no user_id field — candidate is scoped through the offre in the route
+
+# ============================================================
+# QUEUE
+# ============================================================
+queue:
+  connection: database
+  jobs:
+    AnalyseCvJob:
+      dispatched_from: "CandidatController@store"
+      receives: [offre_id, candidat_id, analyse_id]
+      on_success: "Update analyse: status=completed, populate all AI fields"
+      on_failure: "Update analyse: status=failed"
+      never: "Do not run AI calls synchronously on the HTTP thread"
+
+# ============================================================
+# TESTING
+# ============================================================
+testing:
+  framework: pest
+  run_command: "php artisan test --compact"
+  rules:
+    - "Every controller action must have a feature test"
+    - "Every Form Request must have validation tests"
+    - "AI calls must be mocked in tests — never hit the real API"
+    - "Queue jobs must be faked in feature tests with Queue::fake()"
+    - "Use model factories for all test data"
+    - "No N+1 — assert eager loading in critical list views"
+  coverage:
+    - OffreControllerTest
+    - CandidatControllerTest
+    - AnalyseControllerTest
+    - ConversationControllerTest
+    - AnalyseCvJobTest
+    - StoreOffreRequestTest
+    - StoreCandidatRequestTest
+
+# ============================================================
+# DEFINITION OF DONE (DoD)
+# ============================================================
+definition_of_done:
+  - "Feature test passes: php artisan test --compact"
+  - "Pint passes: vendor/bin/pint --dirty --format agent"
+  - "No N+1 queries visible in Debugbar"
+  - "All AI calls mocked in tests"
+  - "Spec archived via openspec-archive"
+  - "Jira ticket transitioned to TERMINE (id: 41)"
+  - "Committed and pushed to featureAI/* branch"
+  - "PR created targeting main"
+
+# ============================================================
+# FORBIDDEN ACTIONS
+# ============================================================
+forbidden:
+  - "NEVER push to main"
+  - "NEVER merge branches"
+  - "NEVER force-push"
+  - "NEVER create top-level Jira tickets without user approval"
+  - "NEVER run AI calls synchronously on the HTTP thread"
+  - "NEVER fabricate AI responses — always use tools for real data"
+  - "NEVER expose one user's data to another user"
+  - "NEVER create new base folders without approval"
+  - "NEVER change dependencies without approval"
+  - "NEVER delete tests without approval"
+
+# ============================================================
+# EDGE CASES — MUST HANDLE
+# ============================================================
+edge_cases:
+  - "CV text blank or under 50 chars → reject at FormRequest level"
+  - "Offer has no required_skills → AI still runs, score will naturally be low"
+  - "AI returns malformed JSON → catch, set status=failed, surface to UI"
+  - "compareCandidates called with IDs from different offers → 422"
+  - "User accesses another user's analyse/conversation → 403"
+  - "Conversation has no messages yet → return empty state, not error"
+  - "AnalyseCvJob fails → status=failed, user sees error state on candidat page"
+
+# ============================================================
+# JIRA — TICKET MANAGEMENT
+# ============================================================
+jira:
+  project: TA
+  issue_type_task: "Tâche"
+  issue_type_task_id: 10360
+  issue_type_subtask: "Sous-tâche"
+  issue_type_subtask_id: 10359
+
+  status_cycle:
+    created: "À faire"
+    in_progress: "En cours"
+    transition_in_progress: 21
+    under_review: "UNDER_REVIEW"
+    transition_under_review: 31
+    done: "TERMINE"
+    transition_done: 41
+
+  subtask_rules:
+    - "EVERY task listed in the spec MUST become a Jira Sous-tâche"
+    - "Subtask title must match the spec task title exactly"
+    - "Subtasks are created immediately after spec approval — before any code"
+    - "Agent NEVER creates new top-level Tâche without user approval"
+    - "Agent only creates Sous-tâches under existing Tâche tickets"
+
+  initial_tickets:
+    - order: 1
+      summary: "Authentication — Inscription / Connexion / Déconnexion"
+      user_stories: [US1]
+      branch: "featureAI/authentication"
+      note: "Breeze already installed — covers view cleanup, verification, and tests only"
+
+    - order: 2
+      summary: "Migrations & Modèles — Setup base de données"
+      user_stories: []
+      branch: "featureAI/database-setup"
+      note: "Migrations, models, enums, factories, seeders — must be done before any feature"
+
+    - order: 3
+      summary: "Offres CRUD — Créer, lister, détailler les offres"
+      user_stories: [US2, US3, US4]
+      branch: "featureAI/offres-crud"
+      depends_on: [1, 2]
+
+    - order: 4
+      summary: "Analyse IA — Soumission CV et structured output"
+      user_stories: [US5, US6, US7, US8]
+      branch: "featureAI/analyse-ia"
+      depends_on: [2, 3]
+      note: "AnalyseCvJob, queue, structured output contract, Eloquent casts"
+
+    - order: 5
+      summary: "Agent Conversationnel — Mémoire et tools"
+      user_stories: [US9, US10, US11]
+      branch: "featureAI/agent-conversationnel"
+      depends_on: [4]
+      note: "Tools, conversation memory, context replay"
+
+    - order: 6
+      summary: "Bonus — Classement et Comparaison candidats"
+      user_stories: []
+      branch: "featureAI/bonus-ranking-comparison"
+      depends_on: [4, 5]
+      note: "Sort by matching score + compareCandidates tool — only if core features done"
+      priority: low
+
+    - order: 7
+      summary: "Documentation — README.md"
+      user_stories: []
+      branch: "featureAI/documentation-readme"
+      depends_on: [1, 2, 3, 4, 5]
+      note: >
+        Update README.md with: project overview, stack, local setup instructions
+        (XAMPP, .env, queue worker, npm), MCP configuration, workflow explanation,
+        branch strategy, and how to run tests.
+      priority: normal
+
+    - order: 8
+      summary: "Présentation — presentation.html"
+      user_stories: []
+      branch: "featureAI/presentation"
+      depends_on: [1, 2, 3, 4, 5]
+      sections:
+        - "Problématique — volume de CVs, processus manuel, subjectivité, temps perdu"
+        - "Solution — TalentMatch, présélection automatisée, agent conversationnel"
+        - "MCD — entités et relations avec cardinalités"
+        - "MLD — tables, clés, types de données"
+        - "Architecture & Méthodologie — Laravel 11, laravel/ai deux couches, queues, tools, mémoire, workflow AI-assisted (OpenSpec + Boost + MCP)"
+        - "Démo — structured output JSON contract, agent tools en action, mémoire de conversation"
+      note: "Single self-contained HTML file, no external dependencies, professional design"
+      priority: normal
