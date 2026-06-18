@@ -60,9 +60,14 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-medium text-gray-900">Candidats soumis</h3>
-                        <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
-                            + Soumettre un CV
-                        </a>
+                        <div class="flex gap-2">
+                            <a href="{{ route('candidats.classement', $offre) }}" class="inline-flex items-center px-4 py-2 bg-white border border-indigo-300 rounded-md font-semibold text-xs text-indigo-700 uppercase tracking-widest hover:bg-indigo-50">
+                                Voir le classement
+                            </a>
+                            <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                + Soumettre un CV
+                            </a>
+                        </div>
                     </div>
 
                     @if ($offre->relationLoaded('candidats') && $offre->candidats->isNotEmpty())
