@@ -55,6 +55,47 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Candidats soumis</h3>
+                        <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                            + Soumettre un CV
+                        </a>
+                    </div>
+
+                    @if ($offre->relationLoaded('candidats') && $offre->candidats->isNotEmpty())
+                        <div class="divide-y divide-gray-200">
+                            @foreach ($offre->candidats as $candidat)
+                                <div class="py-3 flex justify-between items-center">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ $candidat->name }}</p>
+                                        <p class="text-sm text-gray-500">Soumis le {{ $candidat->created_at->format('d/m/Y H:i') }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        @if ($candidat->analyse)
+                                        @if ($candidat->analyse->status->value === 'pending')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">En cours</span>
+                                        @elseif ($candidat->analyse->status->value === 'completed')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {{ $candidat->analyse->matching_score >= 70 ? 'bg-green-100 text-green-800' : ($candidat->analyse->matching_score >= 40 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                                {{ $candidat->analyse->matching_score }}%
+                                            </span>
+                                        @elseif ($candidat->analyse->status->value === 'failed')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Échec</span>
+                                            @endif
+                                        @endif
+                                        <a href="{{ route('candidats.show', [$offre, $candidat]) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Voir l'analyse</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-500 text-sm">Aucun candidat soumis pour cette offre.</p>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>
