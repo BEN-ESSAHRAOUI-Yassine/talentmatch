@@ -19,7 +19,7 @@
 
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Nom du candidat</label>
-                            <input type="text" name="name" id="name" value="{{ old('name') }}"
+                            <input type="text" name="name" id="name" value="{{ old('name', request('name')) }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 placeholder="Ex: Jean Dupont">
                             @error('name')
@@ -31,7 +31,7 @@
                             <label for="cv_text" class="block text-sm font-medium text-gray-700">Texte du CV</label>
                             <textarea name="cv_text" id="cv_text" rows="12"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="Collez le contenu du CV ici (minimum 50 caractères)...">{{ old('cv_text') }}</textarea>
+                                placeholder="Collez le contenu du CV ici (minimum 50 caractères)...">{{ old('cv_text', request('cv_text')) }}</textarea>
                             @error('cv_text')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror

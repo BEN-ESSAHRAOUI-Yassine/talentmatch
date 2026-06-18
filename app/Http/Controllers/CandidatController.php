@@ -10,6 +10,16 @@ use App\Models\Offre;
 
 class CandidatController extends Controller
 {
+    public function index()
+    {
+        $this->authorize('viewAny', Candidat::class);
+
+        $candidats = Candidat::orderBy('created_at', 'desc')->get();
+        $offres = Offre::where('user_id', auth()->id())->get();
+
+        return view('candidats.index', compact('candidats', 'offres'));
+    }
+
     public function create(Offre $offre)
     {
         $this->authorize('create', [Candidat::class, $offre]);
