@@ -48,8 +48,8 @@ naming:
     - offres
     - candidats
     - analyses
-    - agent_conversations         # created by laravel/ai — do NOT create manually
-    - agent_conversation_messages # created by laravel/ai — do NOT create manually
+    - agent_conversations
+    - agent_conversation_messages
   branches: "featureAI/{kebab-case-title}"
   commits: "type(scope): description [AI-assisted]"
   form_requests:
@@ -126,15 +126,6 @@ database:
 # AI — TWO LAYERS
 # ============================================================
 ai:
-  provider: groq
-  provider_env: GROQ_API_KEY
-  note: "Groq supports Text only — no images, TTS, STT, or embeddings"
-  agent_commands:
-    create_agent: "php artisan make:agent {Name}"
-    create_structured_agent: "php artisan make:agent {Name} --structured"
-    create_tool: "php artisan make:tool {Name}"
-    create_middleware: "php artisan make:agent-middleware {Name}"
-
   layer_1_structured_output:
     trigger: "CV submitted via StoreCandidatRequest"
     job: AnalyseCvJob
@@ -157,12 +148,7 @@ ai:
 
   layer_2_agent:
     trigger: "HR agent sends a message in a conversation"
-    memory: >
-      Use the RemembersConversations trait on the agent — do NOT manually implement
-      the messages() method or manually replay history. The SDK handles persistence
-      automatically via agent_conversations and agent_conversation_messages tables
-      created by laravel/ai migrations.
-      Use forUser($user)->prompt() to start, continue($conversationId, as: $user)->prompt() to resume.
+    memory: "Replay full agent_conversation_messages history on each turn"
     tools:
       GetCandidateAnalysisTool:
         signature: "handle(int $candidatId): Analyse"
@@ -229,9 +215,7 @@ testing:
   rules:
     - "Every controller action must have a feature test"
     - "Every Form Request must have validation tests"
-    - "AI calls must be faked using Agent::fake() — never hit the real API"
-    - "For structured output agents, Agent::fake() auto-generates data matching the schema"
-    - "Use AgentName::assertPrompted() and AgentName::assertQueued() for assertions"
+    - "AI calls must be mocked in tests — never hit the real API"
     - "Queue jobs must be faked in feature tests with Queue::fake()"
     - "Use model factories for all test data"
     - "No N+1 — assert eager loading in critical list views"
@@ -251,7 +235,7 @@ definition_of_done:
   - "Feature test passes: php artisan test --compact"
   - "Pint passes: vendor/bin/pint --dirty --format agent"
   - "No N+1 queries visible in Debugbar"
-  - "All AI calls faked via Agent::fake() — zero real API calls in tests"
+  - "All AI calls mocked in tests"
   - "Spec archived via openspec-archive"
   - "Jira ticket transitioned to TERMINE (id: 41)"
   - "Committed and pushed to featureAI/* branch"
