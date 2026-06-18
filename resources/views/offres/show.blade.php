@@ -5,13 +5,13 @@
                 {{ $offre->title }}
             </h2>
             <div class="flex gap-2">
-                <a href="{{ route('offres.edit', $offre) }}" class="inline-flex items-center px-4 py-2 bg-amber-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-400">
+                <a href="{{ route('offres.edit', $offre) }}" class="inline-flex items-center px-4 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-400 transition-all active:scale-[0.98]">
                     Modifier
                 </a>
                 <form action="{{ route('offres.destroy', $offre) }}" method="POST" class="inline" onsubmit="return confirm('Supprimer cette offre ? Les analyses associées seront également supprimées.')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500">
+                    <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-500 transition-all active:scale-[0.98]">
                         Supprimer
                     </button>
                 </form>
@@ -27,8 +27,8 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-card">
+                <div class="p-6 space-y-6">
                     <div>
                         <h3 class="text-lg font-medium text-gray-900">Description</h3>
                         <p class="mt-2 text-gray-700 whitespace-pre-line">{{ $offre->description }}</p>
@@ -56,15 +56,15 @@
                 </div>
             </div>
 
-            <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="mt-6 bg-white rounded-2xl border border-gray-200 shadow-card">
+                <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-medium text-gray-900">Candidats soumis</h3>
                         <div class="flex gap-2">
-                            <a href="{{ route('candidats.classement', $offre) }}" class="inline-flex items-center px-4 py-2 bg-white border border-indigo-300 rounded-md font-semibold text-xs text-indigo-700 uppercase tracking-widest hover:bg-indigo-50">
+                            <a href="{{ route('candidats.classement', $offre) }}" class="inline-flex items-center px-4 py-2.5 bg-white border border-brand-300 text-brand-700 text-sm font-semibold rounded-xl hover:bg-brand-50 transition-all active:scale-[0.98]">
                                 Voir le classement
                             </a>
-                            <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                            <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                 + Soumettre un CV
                             </a>
                         </div>
@@ -91,7 +91,7 @@
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Échec</span>
                                             @endif
                                         @endif
-                                        <a href="{{ route('candidats.show', [$offre, $candidat]) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Voir l'analyse</a>
+                                        <a href="{{ route('candidats.show', [$offre, $candidat]) }}" class="text-brand-600 hover:text-brand-700 text-sm font-medium">Voir l'analyse</a>
                                     </div>
                                 </div>
                             @endforeach

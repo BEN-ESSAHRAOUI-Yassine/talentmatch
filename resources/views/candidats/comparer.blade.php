@@ -8,11 +8,11 @@
     <div class="py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <nav class="mb-4 text-sm text-gray-500">
-                <a href="{{ route('offres.index') }}" class="hover:text-indigo-600">Offres</a>
+                <a href="{{ route('offres.index') }}" class="hover:text-brand-600">Offres</a>
                 <span class="mx-2">&rsaquo;</span>
-                <a href="{{ route('offres.show', $offre) }}" class="hover:text-indigo-600">{{ $offre->title }}</a>
+                <a href="{{ route('offres.show', $offre) }}" class="hover:text-brand-600">{{ $offre->title }}</a>
                 <span class="mx-2">&rsaquo;</span>
-                <a href="{{ route('candidats.classement', $offre) }}" class="hover:text-indigo-600">Classement</a>
+                <a href="{{ route('candidats.classement', $offre) }}" class="hover:text-brand-600">Classement</a>
                 <span class="mx-2">&rsaquo;</span>
                 <span class="text-gray-900">Comparaison</span>
             </nav>
@@ -29,10 +29,10 @@
                         $a = $card['analyse'];
                         $isBest = $bestScore === $c?->id;
                     @endphp
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg {{ $isBest ? 'ring-2 ring-indigo-500' : '' }}">
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-card {{ $isBest ? 'ring-2 ring-brand-500' : '' }}">
                         <div class="p-6">
                             @if ($isBest)
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 mb-3">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 text-brand-800 mb-3">
                                     Meilleur score
                                 </span>
                             @endif
@@ -68,7 +68,7 @@
                                             @if ($a->competences_extraites)
                                                 <div class="flex flex-wrap gap-1">
                                                     @foreach ($a->competences_extraites as $skill)
-                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">{{ $skill }}</span>
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-50 text-brand-700">{{ $skill }}</span>
                                                     @endforeach
                                                 </div>
                                             @else
@@ -151,7 +151,7 @@
             </div>
 
             <div class="mt-6 text-center">
-                <a href="{{ route('candidats.classement', $offre) }}" class="text-indigo-600 hover:underline">&larr; Retour au classement</a>
+                <a href="{{ route('candidats.classement', $offre) }}" class="text-brand-600 hover:text-brand-700 font-medium">&larr; Retour au classement</a>
             </div>
         </div>
     </div>

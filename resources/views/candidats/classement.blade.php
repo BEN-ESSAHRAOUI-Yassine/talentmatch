@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Classement — {{ $offre->title }}
             </h2>
-            <a href="{{ route('offres.show', $offre) }}" class="text-indigo-600 hover:underline">
+            <a href="{{ route('offres.show', $offre) }}" class="text-sm text-brand-600 hover:text-brand-700 font-medium">
                 &larr; Retour à l'offre
             </a>
         </div>
@@ -13,20 +13,20 @@
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <nav class="mb-4 text-sm text-gray-500">
-                <a href="{{ route('offres.index') }}" class="hover:text-indigo-600">Offres</a>
+                <a href="{{ route('offres.index') }}" class="hover:text-brand-600">Offres</a>
                 <span class="mx-2">&rsaquo;</span>
-                <a href="{{ route('offres.show', $offre) }}" class="hover:text-indigo-600">{{ $offre->title }}</a>
+                <a href="{{ route('offres.show', $offre) }}" class="hover:text-brand-600">{{ $offre->title }}</a>
                 <span class="mx-2">&rsaquo;</span>
                 <span class="text-gray-900">Classement</span>
             </nav>
 
             @if (session('success'))
-                <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-md">
+                <div class="mb-4 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg"
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-card"
                  x-data="{
                      selectedIds: [],
                      toggle(id) {
@@ -68,7 +68,7 @@
                                                            value="{{ $analyse->candidat_id }}"
                                                            x-on:change="toggle({{ $analyse->candidat_id }})"
                                                            x-bind:checked="isSelected({{ $analyse->candidat_id }})"
-                                                           class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                                            class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
                                                 @endif
                                             </td>
                                             <td class="px-3 py-4 whitespace-nowrap">
@@ -123,7 +123,7 @@
                                             </td>
                                             <td class="px-3 py-4 whitespace-nowrap text-right text-sm">
                                                 @if ($isCompleted)
-                                                    <a href="{{ route('candidats.show', [$offre, $analyse->candidat]) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                                    <a href="{{ route('candidats.show', [$offre, $analyse->candidat]) }}" class="text-brand-600 hover:text-brand-700 font-medium">Voir</a>
                                                 @elseif ($analyse->status->value === 'failed')
                                                     <form action="{{ route('analyses.retry', $analyse) }}" method="POST" class="inline">
                                                         @csrf
@@ -149,16 +149,16 @@
                         <div class="mt-4 flex justify-center"
                              x-show="canCompare"
                              x-cloak>
-                            <a x-bind:href="'{{ route('candidats.comparer', $offre) }}?ids[]=' + selectedIds[0] + '&ids[]=' + selectedIds[1]"
-                               class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-indigo-500">
-                                Comparer les 2 candidats sélectionnés
-                            </a>
+                             <a x-bind:href="'{{ route('candidats.comparer', $offre) }}?ids[]=' + selectedIds[0] + '&ids[]=' + selectedIds[1]"
+                                class="inline-flex items-center px-6 py-3 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
+                                 Comparer les 2 candidats sélectionnés
+                             </a>
                         </div>
                         @endif
                     @else
                         <p class="text-gray-500 text-center py-8">Aucun candidat soumis pour cette offre.</p>
                         <div class="text-center">
-                            <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                            <a href="{{ route('candidats.create', $offre) }}" class="inline-flex items-center px-4 py-2.5 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                 + Soumettre un CV
                             </a>
                         </div>
