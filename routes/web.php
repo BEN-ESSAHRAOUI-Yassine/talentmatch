@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyseController;
+use App\Http\Controllers\CandidatComparisonController;
 use App\Http\Controllers\CandidatController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
@@ -25,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/offres/{offre}/candidats/create', [CandidatController::class, 'create'])->name('candidats.create');
     Route::post('/offres/{offre}/candidats', [CandidatController::class, 'store'])->name('candidats.store');
+    Route::get('/offres/{offre}/candidats/classement', [CandidatComparisonController::class, 'classement'])->name('candidats.classement');
+    Route::get('/offres/{offre}/candidats/comparer', [CandidatComparisonController::class, 'comparer'])->name('candidats.comparer');
     Route::get('/offres/{offre}/candidats/{candidat}', [CandidatController::class, 'show'])->name('candidats.show');
 
     Route::post('/analyses/{analyse}/retry', [AnalyseController::class, 'retry'])->name('analyses.retry');
