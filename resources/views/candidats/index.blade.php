@@ -8,12 +8,12 @@
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-md">
+                <div class="mb-4 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-card">
                 <div class="p-6">
                     @if ($candidats->isNotEmpty())
                         <div class="overflow-x-auto">
@@ -53,7 +53,7 @@
                                             </td>
                                             <td class="px-3 py-4 whitespace-nowrap text-right text-sm relative">
                                                 <button @click="open = ! open"
-                                                        class="inline-flex items-center px-3 py-1.5 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                                        class="inline-flex items-center px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-700 transition-all active:scale-[0.98]">
                                                     Réutiliser
                                                 </button>
                                                 <div x-show="open"
@@ -70,7 +70,7 @@
                                                             @endforeach
                                                         </select>
                                                         <a x-bind:href="reuseUrl()"
-                                                           class="block w-full text-center px-3 py-1.5 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 disabled:opacity-50"
+                                                           class="block w-full text-center px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-700 transition-all active:scale-[0.98]"
                                                            x-bind:class="selectedOffre ? '' : 'opacity-50 pointer-events-none'">
                                                             Aller au formulaire
                                                         </a>
@@ -85,7 +85,7 @@
                     @else
                         <p class="text-gray-500 text-center py-8">Aucun candidat dans le répertoire.</p>
                         <div class="text-center">
-                            <a href="{{ route('offres.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                            <a href="{{ route('offres.index') }}" class="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                 Voir les offres
                             </a>
                         </div>

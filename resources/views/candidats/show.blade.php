@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Analyse — {{ $candidat->name }}
             </h2>
-            <a href="{{ route('offres.show', $offre) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+            <a href="{{ route('offres.show', $offre) }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-all active:scale-[0.98]">
                 &larr; Retour à l'offre
             </a>
         </div>
@@ -18,8 +18,8 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-card">
+                <div class="p-6">
                     @php $analyse = $candidat->analyse; @endphp
 
                     @if ($analyse->status->value === 'pending')
@@ -47,7 +47,7 @@
                             @endif
                             <form method="POST" action="{{ route('analyses.retry', $analyse) }}" class="mt-4">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                     Réessayer l'analyse
                                 </button>
                             </form>
@@ -82,7 +82,7 @@
                                 <h4 class="font-medium text-gray-900">Compétences extraites</h4>
                                 <div class="mt-2 flex flex-wrap gap-2">
                                     @foreach ($analyse->competences_extraites as $skill)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">{{ $skill }}</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-100 text-brand-800">{{ $skill }}</span>
                                     @endforeach
                                 </div>
                             </div>
@@ -157,13 +157,13 @@
 
                             <div class="border-t border-gray-200 pt-4">
                                 @if ($analyse->agentConversation)
-                                    <a href="{{ route('conversations.show', [$analyse, $analyse->agentConversation]) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                    <a href="{{ route('conversations.show', [$analyse, $analyse->agentConversation]) }}" class="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                         Voir la conversation
                                     </a>
                                 @else
                                     <form method="POST" action="{{ route('conversations.store', $analyse) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-xl hover:bg-brand-700 transition-all active:scale-[0.98]">
                                             Démarrer une conversation
                                         </button>
                                     </form>

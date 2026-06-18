@@ -76,7 +76,7 @@ test('create form pre-fills from query params', function () {
     $offre = Offre::factory()->create(['user_id' => $this->user->id]);
 
     $response = actingAs($this->user)
-        ->get(route('candidats.create', $offre) . '?name=Jean+Reused&cv_text=CV+content+for+reuse');
+        ->get(route('candidats.create', $offre).'?name=Jean+Reused&cv_text=CV+content+for+reuse');
 
     $response->assertStatus(200);
     $response->assertSee('Jean Reused');
@@ -87,7 +87,7 @@ test('create form does not pre-fill cv_text if below 50 chars validation', funct
     $offre = Offre::factory()->create(['user_id' => $this->user->id]);
 
     $response = actingAs($this->user)
-        ->get(route('candidats.create', $offre) . '?name=Jane&cv_text=Short');
+        ->get(route('candidats.create', $offre).'?name=Jane&cv_text=Short');
 
     $response->assertStatus(200);
     $response->assertSee('Jane');
