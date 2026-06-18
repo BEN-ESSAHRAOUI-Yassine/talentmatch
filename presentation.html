@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentMatch — Présentation</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f1f5f9; }
+    .presentation { width: 100vw; height: 100vh; position: relative; }
+    .slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 2rem; opacity: 0; transform: translateY(1.5rem); transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; pointer-events: none; }
+    .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .slide-card { background: #1e293b; border-radius: 12px; padding: 3rem; max-width: 900px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #f1f5f9; }
+    h2 { font-size: 1.8rem; font-weight: 600; margin-bottom: 1.5rem; color: #14b8a6; }
+    h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem; color: #f1f5f9; }
+    p, li { font-size: 1.1rem; line-height: 1.7; color: #cbd5e1; }
+    ul { list-style: none; padding: 0; }
+    ul li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; }
+    ul li::before { content: "▸"; position: absolute; left: 0; color: #14b8a6; font-weight: bold; }
+    .accent { color: #14b8a6; }
+    .subtitle { font-size: 1.3rem; color: #94a3b8; margin-bottom: 2rem; }
+    .meta { color: #64748b; font-size: 0.95rem; margin-top: 2rem; }
+    .meta span { display: inline-block; margin-right: 1.5rem; }
+    .highlight { background: rgba(20, 184, 166, 0.1); border-left: 3px solid #14b8a6; padding: 1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+    .stat { text-align: center; padding: 1.5rem; background: rgba(15, 23, 42, 0.5); border-radius: 8px; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #14b8a6; }
+    .stat-label { font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem; }
+    pre { background: #0f172a; border-left: 3px solid #14b8a6; border-radius: 0 8px 8px 0; padding: 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: 0.85rem; line-height: 1.5; }
+    code { font-family: "SF Mono", Monaco, "Cascadia Code", monospace; color: #e2e8f0; }
+    .diagram-img { width: 100%; max-width: 100%; border-radius: 8px; border: 1px solid #334155; margin: 1rem 0; }
+    .flow-row { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    .flow-step { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 0.6rem 1.2rem; font-size: 0.9rem; color: #cbd5e1; }
+    .flow-arrow { color: #14b8a6; font-size: 1.2rem; }
+    .progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: #1e293b; z-index: 100; }
+    .progress-fill { height: 100%; width: 10%; background: #14b8a6; transition: width 0.4s ease-in-out; }
+    .counter { position: fixed; top: 1rem; right: 1.5rem; font-size: 0.85rem; color: #64748b; z-index: 100; font-variant-numeric: tabular-nums; }
+    .tag { display: inline-block; background: rgba(20, 184, 166, 0.15); color: #14b8a6; padding: 0.15rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-right: 0.4rem; }
+    .vs-row { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
+    .vs-box { flex: 1; padding: 1rem; border-radius: 8px; background: #0f172a; }
+    .vs-box.bad { border-left: 3px solid #ef4444; }
+    .vs-box.good { border-left: 3px solid #22c55e; }
+    .vs-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .vs-box.bad .vs-label { color: #ef4444; }
+    .vs-box.good .vs-label { color: #22c55e; }
+    .badge-row { margin-bottom: 1.5rem; }
+    .badge { display: inline-block; background: #334155; color: #cbd5e1; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; margin-right: 0.3rem; margin-bottom: 0.3rem; }
+    .stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 1rem 0; }
+    .stack-item { display: flex; justify-content: space-between; padding: 0.4rem 0.75rem; background: #0f172a; border-radius: 6px; font-size: 0.9rem; }
+    .stack-item .name { color: #f1f5f9; }
+    .stack-item .ver { color: #14b8a6; font-family: "SF Mono", Monaco, monospace; font-size: 0.8rem; }
+    .center-text { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="counter" id="slideCounter">1 / 10</div>
+
+  <!-- Slide 1: Titre -->
+  <div class="slide active" data-index="0">
+    <div class="slide-card center-text">
+      <div class="badge-row">
+        <span class="badge">Laravel 13</span>
+        <span class="badge">PHP 8.3</span>
+        <span class="badge">Tailwind CSS 3</span>
+        <span class="badge">Groq AI</span>
+      </div>
+      <h1>TalentMatch</h1>
+      <p class="subtitle">Assistant IA de Présélection RH</p>
+      <div style="margin-top: 3rem;">
+        <p style="color: #94a3b8;">Yassine BENESSAHRAOUI</p>
+        <p style="color: #64748b; font-size: 0.95rem;">Juin 2026</p>
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.5rem;">Formation — Conception & Développement d'Applications</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2: Problématique -->
+  <div class="slide" data-index="1">
+    <div class="slide-card">
+      <h2>Problématique</h2>
+      <div class="grid-2">
+        <div class="stat"><div class="stat-value">50-200</div><div class="stat-label">CVs par offre</div></div>
+        <div class="stat"><div class="stat-value">+4h</div><div class="stat-label">Lecture manuelle par offre</div></div>
+      </div>
+      <ul>
+        <li>CVs reçus par email — pas de standardisation</li>
+        <li>Lecture manuelle, répétitive et subjective</li>
+        <li>Aucune standardisation du scoring entre recruteurs</li>
+        <li>Temps perdu sur une tâche que l'IA peut absorber</li>
+        <li>Risque de biais et d'erreurs d'évaluation</li>
+      </ul>
+      <div class="highlight">
+        <strong>Conséquence :</strong> le RH passe des heures sur le tri au lieu de se concentrer sur les entretiens et la décision finale.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: Solution -->
+  <div class="slide" data-index="2">
+    <div class="slide-card">
+      <h2>Solution — TalentMatch</h2>
+      <p style="margin-bottom: 1.5rem;">Soumettre une offre + un CV → analyse structurée en quelques secondes</p>
+      <ul>
+        <li><span class="accent">Matching score</span> justifié de 0 à 100</li>
+        <li><span class="accent">Points forts</span>, lacunes et compétences manquantes identifiés</li>
+        <li><span class="accent">Recommandation typée</span> : convoquer / attente / rejeter</li>
+        <li><span class="accent">Assistant conversationnel</span> avec mémoire pour approfondir</li>
+        <li>Traitement <span class="accent">asynchrone</span> via file d'attente — réponse HTTP immédiate</li>
+      </ul>
+      <div class="highlight">
+        <strong>Résultat :</strong> le RH gagne des heures par offre et prend des décisions éclairées par une analyse IA standardisée.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: MCD -->
+  <div class="slide" data-index="3">
+    <div class="slide-card">
+      <h2>Modèle Conceptuel de Données (MCD)</h2>
+      <img src="public/images/mcd.png" alt="MCD — Modèle Conceptuel de Données" class="diagram-img">
+      <p><strong>Entités principales :</strong> USER, OFFRE, CANDIDAT, ANALYSE, AGENT_CONVERSATION, AGENT_CONVERSATION_MESSAGE</p>
+      <div class="highlight">
+        <strong>Note :</strong> ANALYSE résout le Many-to-Many entre OFFRE et CANDIDAT. Un candidat est toujours lié à une offre via une analyse.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: MLD -->
+  <div class="slide" data-index="4">
+    <div class="slide-card">
+      <h2>Modèle Logique de Données (MLD)</h2>
+      <img src="public/images/mld.png" alt="MLD — Modèle Logique de Données" class="diagram-img">
+      <div class="grid-2">
+        <div>
+          <p><strong>Colonnes JSON :</strong></p>
+          <ul>
+            <li><code>required_skills</code> (offres)</li>
+            <li><code>competences_extraites</code></li>
+            <li><code>langues</code></li>
+            <li><code>points_forts</code></li>
+            <li><code>lacunes</code></li>
+            <li><code>competences_manquantes</code></li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>ENUMs :</strong></p>
+          <ul>
+            <li><code>recommandation</code> : convoquer / attente / rejeter</li>
+            <li><code>status</code> : pending / completed / failed</li>
+            <li><code>role</code> : user / assistant</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight">
+        <strong>Note :</strong> les tables <code>agent_conversations</code> et <code>agent_conversation_messages</code> sont gérées automatiquement par <code>laravel/ai</code>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Architecture & Stack -->
+  <div class="slide" data-index="5">
+    <div class="slide-card">
+      <h2>Architecture & Stack</h2>
+      <div class="stack-grid">
+        <div class="stack-item"><span class="name">Laravel</span><span class="ver">13</span></div>
+        <div class="stack-item"><span class="name">PHP</span><span class="ver">8.3</span></div>
+        <div class="stack-item"><span class="name">laravel/ai</span><span class="ver">0.8</span></div>
+        <div class="stack-item"><span class="name">laravel/boost</span><span class="ver">2.4</span></div>
+        <div class="stack-item"><span class="name">MySQL</span><span class="ver">—</span></div>
+        <div class="stack-item"><span class="name">Groq API</span><span class="ver">—</span></div>
+        <div class="stack-item"><span class="name">Tailwind CSS</span><span class="ver">3</span></div>
+        <div class="stack-item"><span class="name">Pest</span><span class="ver">4.7</span></div>
+      </div>
+      <p style="margin: 1rem 0 0.5rem;"><strong>Couche 1 — Sortie structurée</strong></p>
+      <ul>
+        <li><code>AnalyseCvJob</code> asynchrone (queue <code>database</code>)</li>
+        <li>Contrat JSON produit par le LLM via <code>laravel/ai</code></li>
+      </ul>
+      <p style="margin: 0.75rem 0 0.5rem;"><strong>Couche 2 — Agent conversationnel</strong></p>
+      <ul>
+        <li>Trait <code>RemembersConversations</code> pour la mémoire persistante</li>
+        <li>Tools : <code>GetCandidateAnalysis</code>, <code>GetJobRequirements</code>, <code>CompareCandidates</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Slide 7: Workflow AI-Assisted -->
+  <div class="slide" data-index="6">
+    <div class="slide-card">
+      <h2>Workflow AI-Assisted</h2>
+      <div class="flow-row">
+        <span class="flow-step">/opsx:propose</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">/opsx:apply</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Verify</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">/opsx:archive</span>
+      </div>
+      <ul>
+        <li><strong>OpenSpec</strong> : cycle propose → apply → verify → archive</li>
+        <li><strong>Laravel Boost</strong> : contexte schema + routes pour un code généré de qualité</li>
+        <li><strong>GitHub MCP</strong> + <strong>Jira MCP</strong> intégrés dans OpenCode</li>
+        <li>Branches <code>featureAI/*</code> — <span class="accent">main protégé</span>, merge manuel</li>
+        <li>Commits avec mention <span class="tag">[AI-assisted]</span></li>
+      </ul>
+      <div class="highlight">
+        Le développeur valide chaque étape. L'IA assiste, ne décide pas.
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Démo — Structured Output -->
+  <div class="slide" data-index="7">
+    <div class="slide-card">
+      <h2>Démo — Structured Output</h2>
+      <p>Contrat JSON produit par le LLM à partir du CV et de l'offre :</p>
+<pre><code>{
+  "competences_extraites": ["PHP", "Laravel", "MySQL"],
+  "annees_experience": 5,
+  "niveau_etudes": "Master",
+  "langues": ["Français", "Anglais"],
+  "matching_score": 78,
+  "points_forts": ["Architecture MVC", "API REST"],
+  "lacunes": ["Pas de CI/CD", "Pas de tests"],
+  "competences_manquantes": ["Docker"],
+  "recommandation": "convoquer",
+  "justification": "Profil correspond à 78% des critères..."
+}</code></pre>
+      <p><strong>Pourquoi pas un simple if/else ?</strong></p>
+      <ul>
+        <li>Le matching nécessite une <span class="accent">compréhension sémantique</span> des compétences</li>
+        <li>Un if/else ne peut pas interpréter « 5 ans d'expérience Laravel » dans un contexte RH</li>
+        <li>Le LLM capture les <span class="accent">nuances</span> et produit une <span class="accent">justification</span> lisible</li>
+      </ul>
+      <div class="highlight">
+        Cycle de vie : <code>status: pending</code> (dispatch) → <code>AnalyseCvJob</code> (queue) → <code>status: completed</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Démo — Agent & Tools -->
+  <div class="slide" data-index="8">
+    <div class="slide-card">
+      <h2>Démo — Agent & Tools</h2>
+      <p><strong>Tool signature :</strong></p>
+<pre><code>class GetCandidateAnalysisTool
+{
+    public function handle(int $candidatId): Analyse
+    {
+        return Analyse::with(['candidat', 'offre'])
+            ->whereHas('offre', fn($q) => $q-&gt;where('user_id', auth()-&gt;id()))
+            -&gt;where('candidat_id', $candidatId)
+            -&gt;firstOrFail();
+    }
+}</code></pre>
+      <div class="vs-row">
+        <div class="vs-box bad">
+          <div class="vs-label">Sans tool — Hallucination</div>
+          <p style="font-size: 0.95rem; color: #94a3b8;">« Le candidat a 10 ans d'expérience en Python. » — ❌ Donnée fabriquée</p>
+        </div>
+        <div class="vs-box good">
+          <div class="vs-label">Avec tool — Données réelles</div>
+          <p style="font-size: 0.95rem; color: #94a3b8;">Tool appelle la BDD → réponse basée sur l'analyse réelle ✅</p>
+        </div>
+      </div>
+      <p><strong>Mémoire :</strong> deux questions sur le même candidat sans perdre le contexte</p>
+      <ul>
+        <li>Question 1 : « Quels sont les points forts de ce candidat ? »</li>
+        <li>Question 2 : « Et par rapport à l'autre candidat ? » → l'agent sait de qui on parle</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Slide 10: Conclusion -->
+  <div class="slide" data-index="9">
+    <div class="slide-card center-text">
+      <h2 style="text-align: center;">Conclusion</h2>
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        <div style="background: #0f172a; border-radius: 8px; padding: 1.5rem;">
+          <p style="color: #14b8a6; font-weight: 600; margin-bottom: 0.75rem;">Automatisé par TalentMatch</p>
+          <ul>
+            <li>Réception et analyse des CVs</li>
+            <li>Scoring standardisé et justifié</li>
+            <li>Comparaison de candidats</li>
+            <li>Réponses aux questions RH</li>
+          </ul>
+        </div>
+        <div style="background: #0f172a; border-radius: 8px; padding: 1.5rem;">
+          <p style="color: #f1f5f9; font-weight: 600; margin-bottom: 0.75rem;">Gardé sous contrôle RH</p>
+          <ul>
+            <li>Décision finale d'embauche</li>
+            <li>Validation des analyses</li>
+            <li>Merge et déploiement</li>
+            <li>Entretien avec les candidats</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top: 2rem; font-size: 1rem; color: #94a3b8;">
+        Stack moderne · Workflow professionnel · Code défendable
+      </p>
+      <div class="meta" style="margin-top: 2rem;">
+        <span>Laravel 13 + PHP 8.3</span>
+        <span>Groq AI + laravel/ai</span>
+        <span>OpenSpec + Boost + MCP</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var slides = document.querySelectorAll('.slide');
+    var progressFill = document.getElementById('progressFill');
+    var counter = document.getElementById('slideCounter');
+    var current = 0;
+    var total = slides.length;
+
+    function goTo(index) {
+      if (index < 0 || index >= total) return;
+      slides[current].classList.remove('active');
+      slides[index].classList.add('active');
+      current = index;
+      progressFill.style.width = ((current + 1) / total * 100) + '%';
+      counter.textContent = (current + 1) + ' / ' + total;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (e.clientX < window.innerWidth / 2) {
+        goTo(current - 1);
+      } else {
+        goTo(current + 1);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
