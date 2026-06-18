@@ -7,6 +7,7 @@ use App\Enums\RecommandationEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Analyse extends Model
 {
@@ -50,5 +51,10 @@ class Analyse extends Model
     public function candidat(): BelongsTo
     {
         return $this->belongsTo(Candidat::class);
+    }
+
+    public function agentConversation(): HasOne
+    {
+        return $this->hasOne(AgentConversation::class);
     }
 }
