@@ -148,6 +148,21 @@
                                 <p class="mt-2 text-gray-700 whitespace-pre-line">{{ $analyse->justification }}</p>
                             </div>
                             @endif
+
+                            <div class="border-t border-gray-200 pt-4">
+                                @if ($analyse->agentConversation)
+                                    <a href="{{ route('conversations.show', [$analyse, $analyse->agentConversation]) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                        Voir la conversation
+                                    </a>
+                                @else
+                                    <form method="POST" action="{{ route('conversations.store', $analyse) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
+                                            Démarrer une conversation
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
                     @endif
                 </div>

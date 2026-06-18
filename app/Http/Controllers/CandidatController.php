@@ -39,7 +39,7 @@ class CandidatController extends Controller
     {
         $this->authorize('view', $candidat);
 
-        $candidat->load('analyse');
+        $candidat->load('analyse.agentConversation');
 
         return view('candidats.show', compact('offre', 'candidat'));
     }
