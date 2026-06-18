@@ -19,7 +19,7 @@ beforeEach(function () {
 });
 
 test('agent starts a conversation and returns a response', function () {
-    $agent = new AnalyseConversationAgent;
+    $agent = new AnalyseConversationAgent($this->analyse);
     $response = $agent->forUser($this->user)->prompt('Parle-moi de ce candidat');
 
     expect($response->text)->not->toBeEmpty();
@@ -27,7 +27,7 @@ test('agent starts a conversation and returns a response', function () {
 });
 
 test('agent can be prompted and records conversation', function () {
-    $agent = new AnalyseConversationAgent;
+    $agent = new AnalyseConversationAgent($this->analyse);
     $response = $agent->forUser($this->user)->prompt('Quel est le score de matching ?');
 
     expect($response->text)->toBeString();

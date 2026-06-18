@@ -22,9 +22,11 @@
                         <div class="space-y-4 mb-6 max-h-96 overflow-y-auto" x-ref="messages">
                             @foreach ($conversation->messages as $message)
                                 <div class="flex {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'justify-end' : 'justify-start' }}">
-                                    <div class="max-w-[75%] rounded-lg px-4 py-3 {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-900' }}">
-                                        <p class="text-sm">{{ $message->content }}</p>
-                                        <p class="text-xs mt-1 {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'text-indigo-200' : 'text-gray-400' }}">
+                                    <div class="max-w-[75%] rounded-lg px-4 py-3 text-sm leading-relaxed {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-900' }}">
+                                        <div class="prose prose-sm max-w-none {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'prose-invert' : '' }}">
+                                            {!! Str::of($message->content)->markdown() !!}
+                                        </div>
+                                        <p class="text-xs mt-2 {{ $message->role === \App\Enums\MessageRoleEnum::User ? 'text-indigo-200' : 'text-gray-400' }}">
                                             {{ $message->created_at->diffForHumans() }}
                                         </p>
                                     </div>
