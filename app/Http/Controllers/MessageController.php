@@ -14,7 +14,9 @@ class MessageController extends Controller
     {
         $this->authorize('create', [AgentConversationMessage::class, $conversation]);
 
-        $agent = new AnalyseConversationAgent;
+        $analyse->loadMissing('candidat', 'offre');
+
+        $agent = new AnalyseConversationAgent($analyse);
         $agent
             ->continue($conversation->id, as: auth()->user())
             ->prompt($request->input('content'));
