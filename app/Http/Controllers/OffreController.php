@@ -38,6 +38,8 @@ class OffreController extends Controller
     {
         $this->authorize('view', $offre);
 
+        $offre->load('candidats.analyse');
+
         return view('offres.show', compact('offre'));
     }
 

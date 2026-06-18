@@ -222,14 +222,14 @@ before archiving. Archive handles this automatically if skipped.
 
 | Order | Key  | Feature                          | Change Name                    | Branch                              |
 |-------|------|----------------------------------|--------------------------------|-------------------------------------|
-| 1     | TA-1 | Authentication                   | authentication                 | featureAI/authentication            |
-| 2     | TA-2 | Migrations & Modèles             | database-setup                 | featureAI/database-setup            |
-| 3     | TA-3 | Offres CRUD                      | offres-crud                    | featureAI/offres-crud               |
-| 4     | TA-4 | Analyse IA                       | analyse-ia                     | featureAI/analyse-ia                |
-| 5     | TA-5 | Agent Conversationnel            | agent-conversationnel          | featureAI/agent-conversationnel     |
-| 6     | TA-6 | Bonus — Classement & Comparaison | bonus-ranking-comparison       | featureAI/bonus-ranking-comparison  |
-| 7     | TA-7 | Documentation — README.md        | documentation-readme           | featureAI/documentation-readme      |
-| 8     | TA-8 | Présentation — presentation.html | presentation                   | featureAI/presentation              |
+| 1     | TA-3 | Authentication                   | authentication                 | featureAI/authentication            |
+| 2     | TA-4 | Migrations & Modèles             | database-setup                 | featureAI/database-setup            |
+| 3     | TA-5 | Offres CRUD                      | offres-crud                    | featureAI/offres-crud               |
+| 4     | TA-6 | Analyse IA                       | analyse-ia                     | featureAI/analyse-ia                |
+| 5     | TA-7 | Agent Conversationnel            | agent-conversationnel          | featureAI/agent-conversationnel     |
+| 6     | TA-8 | Bonus — Classement & Comparaison | bonus-ranking-comparison       | featureAI/bonus-ranking-comparison  |
+| 7     | TA-9 | Documentation — README.md        | documentation-readme           | featureAI/documentation-readme      |
+| 8     | TA-10 | Présentation — presentation.html | presentation                   | featureAI/presentation              |
 
 > TA-X keys are estimates — confirm actual keys after Jira ticket creation in the init step.
 

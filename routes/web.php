@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CandidatController;
 use App\Http\Controllers\OffreController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('offres', OffreController::class);
+
+    Route::get('/offres/{offre}/candidats/create', [CandidatController::class, 'create'])->name('candidats.create');
+    Route::post('/offres/{offre}/candidats', [CandidatController::class, 'store'])->name('candidats.store');
+    Route::get('/offres/{offre}/candidats/{candidat}', [CandidatController::class, 'show'])->name('candidats.show');
 });
 
 require __DIR__.'/auth.php';
