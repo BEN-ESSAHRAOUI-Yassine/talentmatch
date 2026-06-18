@@ -31,4 +31,4 @@
 - [x] 6.3 Debugbar check — no N+1 queries on classement or comparer pages (verify `with('candidat')` eager loading on all analysis queries)
 - [x] 6.4 Archive spec via `/opsx-archive`
 - [x] 6.5 Transition TA-8 and all Sous-tâches to TERMINE (transition id 41)
-- [ ] 6.6 Commit with message `feat(bonus): implement candidate ranking and comparison views [AI-assisted]` and push to `featureAI/bonus-ranking-comparison`
+- [x] 6.6 Commit with message `feat(bonus): implement candidate ranking and comparison views [AI-assisted]` and push to `featureAI/bonus-ranking-comparison`

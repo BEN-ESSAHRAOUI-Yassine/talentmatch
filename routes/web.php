@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('offres', OffreController::class);
 
+    Route::get('/candidats', [CandidatController::class, 'index'])->name('candidats.index');
     Route::get('/offres/{offre}/candidats/create', [CandidatController::class, 'create'])->name('candidats.create');
     Route::post('/offres/{offre}/candidats', [CandidatController::class, 'store'])->name('candidats.store');
     Route::get('/offres/{offre}/candidats/classement', [CandidatComparisonController::class, 'classement'])->name('candidats.classement');

@@ -10,7 +10,7 @@ class CandidatPolicy
 {
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     public function view(User $user, Candidat $candidat): bool
